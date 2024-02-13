@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="HangmanAssignment.HangmanGamePage"
+             Title="MAUI Hangman Assignment">
+    <VerticalStackLayout>
+        <Label Text="Welcome to Hangman" HorizontalTextAlignment="Center" HorizontalOptions="Center" FontAttributes="Bold" FontSize="40"/>
+        <Image Margin="40" Source="{Binding CurrentImage}" HorizontalOptions="Center"/>
+        <Label FontAttributes="Bold" FontSize="30" HorizontalOptions="Center" Margin="40" Text="{Binding CurrentGuess}"/>
+        <Label FontAttributes="Bold" HorizontalOptions="Center" Text="{Binding IncorrectGuesses}"/>
+        <Label FontSize="Large" HorizontalOptions="Center" Text="{Binding Result}"/>
+        <Button HorizontalOptions="Center" Text="Reset" WidthRequest="100" Clicked="ResetClick"/>
+        <FlexLayout
+    x:Name="LettersContainer"
+    Grid.Row="1"
+    JustifyContent="SpaceEvenly"
+    BindableLayout.ItemsSource="{Binding Letters}"
+    Wrap="Wrap">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate>
+                    <Button
+                BackgroundColor="Orange"
+                HeightRequest="50"
+                Text="{Binding .}"
+                WidthRequest="50"
+                Clicked="ButtonClick"/>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </FlexLayout>
+        <!--<Entry FontSize="30" HorizontalOptions="Center" Margin="40" Placeholder="Enter your next guess"/>
+        <Button Text="Guess"/>-->
+    </VerticalStackLayout>
+</ContentPage>
