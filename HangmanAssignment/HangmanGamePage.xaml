@@ -15,7 +15,15 @@
             x:Name="EntryBox" FontSize="30" HorizontalOptions="Center" 
             Margin="40" Placeholder="Enter your next guess"
             MaxLength="1" TextTransform="Uppercase" TextColor="Black" 
-            HorizontalTextAlignment="Center" Keyboard="Chat"/>
+            HorizontalTextAlignment="Center">
+            <Entry.Keyboard>
+                <Keyboard x:FactoryMethod="Create">
+                    <x:Arguments>
+                        <KeyboardFlags>None</KeyboardFlags>
+                    </x:Arguments>
+                </Keyboard>
+            </Entry.Keyboard>
+        </Entry>
         <Button x:Name="GuessButton" HorizontalOptions="Center" Text="Guess" WidthRequest="100" BackgroundColor="Blue" TextColor="White" Clicked="GuessClick"/>
     </VerticalStackLayout>
 </ContentPage>
