@@ -11,24 +11,11 @@
         <Label FontAttributes="Bold" HorizontalOptions="Center" Text="{Binding IncorrectGuesses}" TextColor="Black"/>
         <Label FontSize="40" HorizontalOptions="Center" Text="{Binding Result}" TextColor="Black"/>
         <Button HorizontalOptions="Center" Text="Reset" WidthRequest="100" Clicked="ResetClick" BackgroundColor="Red" TextColor="White"/>
-        <!--<FlexLayout
-    x:Name="LettersContainer"
-    Grid.Row="1"
-    JustifyContent="SpaceEvenly"
-    BindableLayout.ItemsSource="{Binding Letters}"
-    Wrap="Wrap">
-            <BindableLayout.ItemTemplate>
-                <DataTemplate>
-                    <Button
-                BackgroundColor="Orange"
-                HeightRequest="50"
-                Text="{Binding .}"
-                WidthRequest="50"
-                Clicked="ButtonClick"/>
-                </DataTemplate>
-            </BindableLayout.ItemTemplate>
-        </FlexLayout>-->
-        <Entry x:Name="EntryBox" FontSize="30" HorizontalOptions="Center" Margin="40" Placeholder="Enter your next guess" Keyboard="Text" MaxLength="1" TextTransform="Uppercase" TextColor="Black" HorizontalTextAlignment="Center"/>
+        <Entry 
+            x:Name="EntryBox" FontSize="30" HorizontalOptions="Center" 
+            Margin="40" Placeholder="Enter your next guess"
+            MaxLength="1" TextTransform="Uppercase" TextColor="Black" 
+            HorizontalTextAlignment="Center" Keyboard="Chat"/>
         <Button x:Name="GuessButton" HorizontalOptions="Center" Text="Guess" WidthRequest="100" BackgroundColor="Blue" TextColor="White" Clicked="GuessClick"/>
     </VerticalStackLayout>
 </ContentPage>
