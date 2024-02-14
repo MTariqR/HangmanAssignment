@@ -6,13 +6,13 @@ namespace HangmanAssignment;
 public partial class HangmanGamePage : ContentPage, INotifyPropertyChanged
 {
 
-	private string guessLetter;
-	public string GuessLetter 
+	private string currentGuess;
+	public string CurrentGuess 
 	{
-		get => GuessLetter;
+		get => currentGuess;
 		set
 		{
-			guessLetter = value;
+			currentGuess = value;
 			OnPropertyChanged();
 		}
 	}
@@ -65,11 +65,11 @@ public partial class HangmanGamePage : ContentPage, INotifyPropertyChanged
 
 	List<string> wordList = new() 
 	{
-		"code",
-		"csharp",
-		"laptop",
-		"colab",
-		"samsung",
+		"CODE",
+		"CSHARP",
+		"LAPTOP",
+		"COLAB",
+		"SAMSUNG",
 	};
 
 	private string answer = "";
@@ -91,47 +91,49 @@ public partial class HangmanGamePage : ContentPage, INotifyPropertyChanged
             {
                 sb.Append('_');
             }
+			sb.Append(" ");
         }
 
-        GuessLetter = sb.ToString();
+        CurrentGuess = sb.ToString();
     }
 
 	private void CheckWin()
 	{
-		if (GuessLetter.ToString() == answer)
+		if (CurrentGuess.Replace(" ","") == answer)
 		{
 			Result = "You Win!!!";
 			DisableButtons();
-		}
+        }
 	}
 
-	private void DisableButtons()
+    private void DisableButtons()
 	{
-        foreach (var child in LettersContainer.Children)
-        {
-            var btn = child as Button;
-			if (btn != null)
-			{
-				btn.IsEnabled = false;
-			}
-        }
+        GuessButton.IsEnabled= false;
+		GuessButton.IsVisible= false;
+		EntryBox.IsEnabled= false;
+		EntryBox.IsVisible = false;
     }
 
-	private void EnableButtons()
+    private void EnableButtons()
 	{
-        foreach (var child in LettersContainer.Children)
-        {
-            var btn = child as Button;
-			if (btn != null)
-			{
-				btn.IsEnabled = true;
-			}
-        }
+        GuessButton.IsEnabled = true;
+		GuessButton.IsVisible= true;
+        EntryBox.IsEnabled = true;
+		EntryBox.IsVisible= true;
     }
 
-	private void UpdateStatus()
+    private void UpdateStatus()
 	{
-		IncorrectGuesses = guessed.ToString();
+        StringBuilder temp = new StringBuilder();
+        foreach (char c in guessed)
+        {
+			if (!answer.Contains(c))
+			{
+				temp.Append(c);
+			}
+        }
+
+		IncorrectGuesses = $"Incorrect Guesses: {temp.ToString()}";
 	}
 
 	private int mistakes = 1;
@@ -142,6 +144,7 @@ public partial class HangmanGamePage : ContentPage, INotifyPropertyChanged
         {
             Result = "You Lost!!";
             DisableButtons();
+			CurrentGuess = answer;
         }
     }
     private void Turn(char letter)
@@ -167,21 +170,17 @@ public partial class HangmanGamePage : ContentPage, INotifyPropertyChanged
     public HangmanGamePage()
 	{
 		InitializeComponent();
-		Letters.AddRange("abcdefghijklmnopqrstuvwxyz");
+		Letters.AddRange("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 		BindingContext = this;
 		PickWord();
 		CheckWord(answer, guessed);
 	}
 
-	private void ButtonClick(object sender, EventArgs e)
+	private void GuessClick(object sender, EventArgs e)
 	{
-		var button = sender as Button;
-		if(button != null) 
-		{
-			var letter = button.Text;
-			button.IsEnabled= false;
-			Turn(letter[0]);
-		}
+		string letter = EntryBox.Text;
+		EntryBox.Text="";
+		Turn(letter[0]);
 	}
 
 	private void ResetClick(object sender, EventArgs e) 
@@ -193,6 +192,6 @@ public partial class HangmanGamePage : ContentPage, INotifyPropertyChanged
         CheckWord(answer, guessed);
         Result = "";
         UpdateStatus();
-        EnableButtons();
+		EnableButtons();
     }
 }
