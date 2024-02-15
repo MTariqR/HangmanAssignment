@@ -5,10 +5,22 @@ namespace HangmanAssignment;
 
 public partial class HangmanGamePage : ContentPage, INotifyPropertyChanged
 {
+    #region Variables
 
+    private List<char> guessed = new();
 	private string currentGuess;
-	public string CurrentGuess 
-	{
+	private string result;
+    private string incorrectGuesses;
+    private string currentImage = "hang1.png";
+    private string answer = "";
+    private int mistakes = 1;
+    private int maxwrong = 8;
+
+    #endregion
+
+    #region Getter Methods
+    public string CurrentGuess
+    {
 		get => currentGuess;
 		set
 		{
@@ -17,19 +29,6 @@ public partial class HangmanGamePage : ContentPage, INotifyPropertyChanged
 		}
 	}
 
-	private List<char> letters = new();
-	private List<char> guessed = new();
-	public List<char> Letters
-	{
-		get => letters;
-		set
-		{
-			letters = value;
-			OnPropertyChanged();
-		}
-	}
-
-	private string result;
 	public string Result
 	{
 		get => result;
@@ -40,7 +39,6 @@ public partial class HangmanGamePage : ContentPage, INotifyPropertyChanged
 		}
 	}
 
-	private string incorrectGuesses;
 	public string IncorrectGuesses
 	{
 		get => incorrectGuesses;
@@ -51,7 +49,6 @@ public partial class HangmanGamePage : ContentPage, INotifyPropertyChanged
 		}
 	}
 
-	private string currentImage = "hang1.png";
 	public string CurrentImage
 	{
 		get => currentImage;
@@ -62,24 +59,56 @@ public partial class HangmanGamePage : ContentPage, INotifyPropertyChanged
 		}
 	}
 
+    #endregion
 
-	List<string> wordList = new() 
-	{
-		"CODE",
-		"CSHARP",
-		"LAPTOP",
-		"COLAB",
-		"SAMSUNG",
-	};
+    #region Buttons
 
-	private string answer = "";
-	private void PickWord()
-	{
-		answer = wordList[new Random().Next(0, wordList.Count)];
-	}
+    private void DisableButtons()
+    {
+        GuessButton.IsEnabled = false;
+        GuessButton.IsVisible = false;
+        EntryBox.IsEnabled = false;
+        EntryBox.IsVisible = false;
+    }
 
-	private void CheckWord(string answer, List<char> guessed)
-	{
+    private void EnableButtons()
+    {
+        GuessButton.IsEnabled = true;
+        GuessButton.IsVisible = true;
+        EntryBox.IsEnabled = true;
+        EntryBox.IsVisible = true;
+    }
+
+    private void GuessClick(object sender, EventArgs e)
+    {
+        string letter = EntryBox.Text;
+        EntryBox.Text = "";
+        Turn(letter[0]);
+    }
+
+    private void ResetClick(object sender, EventArgs e)
+    {
+        mistakes = 1;
+        guessed = new List<char>();
+        CurrentImage = "hang1.jpg";
+        PickWord();
+        CheckWord(answer, guessed);
+        Result = "";
+        UpdateStatus();
+        EnableButtons();
+    }
+
+    #endregion
+
+    #region Game
+
+    private void PickWord()
+    {
+        answer = wordList[new Random().Next(0, wordList.Count)];
+    }
+
+    private void CheckWord(string answer, List<char> guessed)
+    {
         StringBuilder sb = new StringBuilder();
         foreach (char c in answer)
         {
@@ -91,62 +120,45 @@ public partial class HangmanGamePage : ContentPage, INotifyPropertyChanged
             {
                 sb.Append('_');
             }
-			sb.Append(" ");
+            sb.Append(" ");
         }
 
         CurrentGuess = sb.ToString();
     }
 
-	private void CheckWin()
-	{
-		if (CurrentGuess.Replace(" ","") == answer)
-		{
-			Result = "You Win!!!";
-			DisableButtons();
-        }
-	}
-
-    private void DisableButtons()
-	{
-        GuessButton.IsEnabled= false;
-		GuessButton.IsVisible= false;
-		EntryBox.IsEnabled= false;
-		EntryBox.IsVisible = false;
-    }
-
-    private void EnableButtons()
-	{
-        GuessButton.IsEnabled = true;
-		GuessButton.IsVisible= true;
-        EntryBox.IsEnabled = true;
-		EntryBox.IsVisible= true;
-    }
-
-    private void UpdateStatus()
-	{
-        StringBuilder temp = new StringBuilder();
-        foreach (char c in guessed)
+    private void CheckWin()
+    {
+        if (CurrentGuess.Replace(" ", "") == answer)
         {
-			if (!answer.Contains(c))
-			{
-				temp.Append(c);
-			}
+            Result = "You Win!!!";
+            DisableButtons();
         }
+    }
 
-		IncorrectGuesses = $"Incorrect Guesses: {temp.ToString()}";
-	}
-
-	private int mistakes = 1;
-	private int maxwrong = 8;
     private void CheckLose()
     {
         if (mistakes == maxwrong)
         {
             Result = "You Lost!!";
             DisableButtons();
-			CurrentGuess = answer;
+            CurrentGuess = answer;
         }
     }
+
+    private void UpdateStatus()
+    {
+        StringBuilder temp = new StringBuilder();
+        foreach (char c in guessed)
+        {
+            if (!answer.Contains(c))
+            {
+                temp.Append(c);
+            }
+        }
+
+        IncorrectGuesses = $"Incorrect Guesses: {temp.ToString()}";
+    }
+
     private void Turn(char letter)
     {
         if (!guessed.Contains(letter))
@@ -167,31 +179,34 @@ public partial class HangmanGamePage : ContentPage, INotifyPropertyChanged
             }
         }
     }
+
+    #endregion
+
+    #region Constructor 
+
     public HangmanGamePage()
-	{
-		InitializeComponent();
-		Letters.AddRange("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-		BindingContext = this;
-		PickWord();
-		CheckWord(answer, guessed);
-	}
-
-	private void GuessClick(object sender, EventArgs e)
-	{
-		string letter = EntryBox.Text;
-		EntryBox.Text="";
-		Turn(letter[0]);
-	}
-
-	private void ResetClick(object sender, EventArgs e) 
-	{
-        mistakes = 1;
-        guessed = new List<char>();
-        CurrentImage = "hang1.jpg";
+    {
+        InitializeComponent();
+        BindingContext = this;
         PickWord();
         CheckWord(answer, guessed);
-        Result = "";
-        UpdateStatus();
-		EnableButtons();
     }
+
+    #endregion
+
+    List<string> wordList = new() 
+	{
+		"CODE",
+		"CSHARP",
+		"LAPTOP",
+		"COLAB",
+		"SAMSUNG",
+	};
+
+	
+
+    
+    
+
+	
 }
